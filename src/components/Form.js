@@ -1,31 +1,36 @@
-import React from "react";
+import React, { Component } from 'react';
 
-class Form extends React.Component {
+export class Form extends Component {
+constructor(){
+  super()
 
-  state = {
-  	title: '',
-  	author: '',
-  	img: ''
+  this.state={
+    title: "",
+    author: "",
+    img_url: ""
   }
+}
 
-  handleAddForm = (e) => {
-  	e.preventDefault()
+handleFormChange = (e) => {
+  this.setState({ [e.target.name]: e.target.value })
+}
 
-  	this.setState({
-  		[e.target.name]: e.target.value
-  	}, () => console.log(this.state))
-  }
-
-  render() {
+handleSubmit = (e) => {
+  e.preventDefault();
+  // handleBookCreation()
+  // create an object with the contents of the state.
+  // use a callback function to .push new object into state in App.js
+}
+  
+render() {
     return (
       <div>
-    	<h3>Add a new book!</h3>
-    	<form onSubmit={(e) => this.props.handleFormSubmit(e, this.state)}>
-		  	<input onChange={this.handleAddForm} type="text" name="title" placeholder="title" />
-		  	<input onChange={this.handleAddForm} type="text" name="author" placeholder="author" />
-		  	<input onChange={this.handleAddForm} type="text" name="img" placeholder="img" />
-	  	<input type="submit" />
-	  </form>
+        <form onSubmit={this.handleSubmit}>
+          <input onChange={this.handleFormChange} type="text" name="title" placeholder='title'/>
+          <input onChange={this.handleFormChange} type="text" name="author" placeholder='author'/>
+          <input onChange={this.handleFormChange} type="text" name="img_url" placeholder='img_url'/>
+          <input type="submit" value='submit'/>
+        </form>
       </div>
     );
   }

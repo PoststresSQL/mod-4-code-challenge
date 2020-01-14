@@ -1,64 +1,72 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import BookList from "./containers/BookList";
+import Booklist from "./containers/Booklist";
 import Bookshelf from "./containers/Bookshelf";
+import Form from "./components/Form";
 
-class App extends Component {
+// endpoint
+const API = "http://localhost:3005/books";
 
-  state = {
-  	books: [],
-  	bookShelf: [],
-  	lastBookId: 0
+export class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      allBooks: [],
+      selectedBooks: []
+    };
   }
 
   componentDidMount() {
-
-  	fetch('http://localhost:3005/books')
-  	  .then(resp => resp.json())
-  	  .then(books => {
-  	  	this.setState({books})
-  	  })
+    fetch(API)
+      .then(res => res.json())
+      .then(books => this.setState({ allBooks: books }));
   }
 
-  handleBookClick = (book) => {
-  	if(!this.state.bookShelf.includes(book)) {
-  	  this.setState({
-  		  bookShelf: [...this.state.bookShelf, book]
-  	  })
-  	 }
-  }
+  handleBookSelection = selectedBook => {
+    const bookExists = this.state.selectedBooks.some(book => book.id === selectedBook.id);
 
-  handleBookShelfClick = (bookObj) => {
-  	const stateCopy = [...this.state.bookShelf]
-  	const newState = stateCopy.filter(book => book.id !== bookObj.id)
+    if (!bookExists) {
+      this.setState({
+        selectedBooks: [...this.state.selectedBooks, selectedBook]
+      });
+    }
+    else
+    {
+      alert('HEY MAN THERE"S A BOOK IN HERE ALREADY WITH THAT SAME NAME SO JUST READ IT OR REMOVE IT DAMN.')
 
-  	this.setState({
-  		bookShelf: newState
-  	})
-  }
+    }
+  };
 
-  handleFormSubmit = (e, bookObj) => {
-  	e.preventDefault()
+  handleBookRemoval = selectedBook => {
+    const newSelectedBookState = this.state.selectedBooks.filter(
+      book => book.id !== selectedBook.id
+    );
 
-  	// this.setState({ lastBookId: this.state.books.length + 1 })
+    console.log(newSelectedBookState);
+    this.setState({
+      selectedBooks: newSelectedBookState
+    });
+  };
 
-	if(!this.state.books.includes(bookObj)) {
-  	  this.setState({
-  		books: [bookObj, ...this.state.books]
-  	  })
-  	}
-  }
- 
+  handleBookCreation = () => {};
+
   render() {
+    // console.log(this.state.selectedBooks);
+
     return (
-    	<main>
-    	  <h1>Angeloz Bookz</h1>
-	      <div className="book-container">
-	        <BookList handleFormSubmit={this.handleFormSubmit} handleBookClick={this.handleBookClick} books={this.state.books} />
-	        <Bookshelf handleBookShelfClick={this.handleBookShelfClick} books={this.state.bookShelf} />
-	      </div>
-	    </main>
+      <div>
+        <Form handleBookCreation={this.handleBookCreation} />
+        <div className={"book-container"}>
+          <Booklist
+            handleBookSelection={this.handleBookSelection}
+            allBooks={this.state.allBooks}
+          />
+          <Bookshelf
+            handleBookRemoval={this.handleBookRemoval}
+            selectedBooks={this.state.selectedBooks}
+          />
+        </div>
+      </div>
     );
   }
 }

@@ -1,18 +1,23 @@
-import React from "react";
 import Book from "../components/Book";
+import React from "react";
+
+// render all selectedBooks through Bookshelf
 
 const Bookshelf = props => {
-
-  const bookShelfBooks = props.books.map(book => {
-  	return <Book key={book.id} handleBookShelfClick={props.handleBookShelfClick} book={book} />
-  })
-
+  
   return (
-    <div>
+    
+    <div className="bookshelf">
       <h1>Book Shelf</h1>
-      <ul>{bookShelfBooks}</ul>
+      {props.selectedBooks.map(book => (
+        <Book
+          handleBookEvent={props.handleBookRemoval}
+          bookData={book}
+          key={book.id}
+        />
+      ))}
     </div>
   );
 };
 
-export default Bookshelf;
+export default Bookshelf; //hello!!
